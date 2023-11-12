@@ -1,12 +1,15 @@
 'use strict';
 
+const sectionElem = document.getElementById('resultsContainer');
+const button = document.getElementById('showResults');
+
 const staticProducts = [];
 let adjustProducts = [];
 let firstProductImg = null;
 let rightProductImg = null;
 let centerProductImg = null;
 let countClick = 0;
-const maxClick = 25;
+const maxClick = 9;
 const leftImg = document.querySelector('section img:first-child');
 const centerImg = document.querySelector('section img:nth-child(2)');
 const rightImg = document.querySelector('section img:nth-child(3)');
@@ -39,6 +42,7 @@ staticProducts.push(cthulhu);
 
 function renderProducts() {
     if(countClick == maxClick) {
+        button.removeAttribute('hidden');
         viewResults.addEventListener('click', handleViewResultsClick);
 
         // disable the L, C & R images
@@ -111,5 +115,14 @@ function renderResults() {
         const currentProduct = staticProducts[i];
         const allResults = `${currentProduct.name} had ${currentProduct.views} views and was clicked ${currentProduct.clicks} times.`;
         console.log(allResults);
+
+        const resultsHeaderElem = document.createElement('h2');
+        sectionElem.appendChild(resultsHeaderElem);
+        resultsHeaderElem.textContent = allResults;
+
+        // const resultsDataElem = document.createElement('p');
+        // resultsHeaderElem.appendChild(resultsDataElem);
+        // resultsDataElem.textContent = allResults;
+
     }
 }
