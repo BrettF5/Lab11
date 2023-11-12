@@ -1,5 +1,9 @@
 'use strict';
 
+/////////////////////
+// Globals
+/////////////////////
+
 const sectionElem = document.getElementById('resultsContainer');
 const button = document.getElementById('showResults');
 
