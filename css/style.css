@@ -1,7 +1,7 @@
-/* body {
-display: flex;
-flex-direction:column;
-} */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #e6f7ff;
+}
 
 header {
   border: 2px dashed red;
@@ -10,10 +10,9 @@ header {
   text-align: left;
 }
 
-main {
+section {
 display: flex;
 }
-
 
 img {
   flex: 1;
@@ -33,9 +32,19 @@ img {
   width: 200px;
 }
 
+p {
+  align-self: flex-end;
+  
+}
+
 footer {
   border: 2px dashed red;
   background: #ccc;
   padding: 3em;
   text-align: center;
+}
+
+#chartContainer {
+  flex: 3;
+
 }
