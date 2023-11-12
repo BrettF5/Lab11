@@ -1,5 +1,8 @@
 'use strict';
 
+const sectionElem = document.getElementById('resultsContainer');
+const button = document.getElementById('showResults');
+
 const staticProducts = [];
 let adjustProducts = [];
 let firstProductImg = null;
@@ -27,6 +30,18 @@ let breakfast = new Product('Breakfast', './images/breakfast.jpg');
 let bubblegum = new Product('Bubblegum', './images/bubblegum.jpg');
 let chair = new Product('Chair', './images/chair.jpg');
 let cthulhu = new Product('Cthulhu', './images/cthulhu.jpg');
+let dogDuck = new Product('Dog-Duck', './images/dog-duck.jpg');
+let dragon = new Product('Dragon', './images/dragon.jpg');
+let pen = new Product('Pen', './images/pen.jpg');
+let petSweep = new Product('Pet-Sweep', './images/pet-sweep.jpg');
+let scissor = new Product('Scissor', './images/scissors.jpg');
+let shark = new Product('Shark', './images/shark.jpg');
+let sweep = new Product('Sweep', './images/sweep.png');
+let tauntaun = new Product('Tauntaun', './images/tauntaun.jpg');
+let unicorn = new Product('Unicorn', './images/unicorn.jpg');
+let waterCan = new Product('Water-Can', './images/water-can.jpg');
+let wineGlass = new Product('Wine-Glass', './images/wine-glass.jpg');
+
 
 staticProducts.push(bag);
 staticProducts.push(banana);
@@ -36,9 +51,19 @@ staticProducts.push(breakfast);
 staticProducts.push(bubblegum);
 staticProducts.push(chair);
 staticProducts.push(cthulhu);
+staticProducts.push(dogDuck);
+staticProducts.push(pen);
+staticProducts.push(petSweep);
+staticProducts.push(scissor);
+staticProducts.push(shark);
+staticProducts.push(sweep);
+staticProducts.push(tauntaun);
+staticProducts.push(waterCan);
+staticProducts.push(wineGlass);
 
 function renderProducts() {
     if(countClick == maxClick) {
+        button.removeAttribute('hidden');
         viewResults.addEventListener('click', handleViewResultsClick);
 
         // disable the L, C & R images
@@ -111,5 +136,14 @@ function renderResults() {
         const currentProduct = staticProducts[i];
         const allResults = `${currentProduct.name} had ${currentProduct.views} views and was clicked ${currentProduct.clicks} times.`;
         console.log(allResults);
+
+        const resultsHeaderElem = document.createElement('h2');
+        sectionElem.appendChild(resultsHeaderElem);
+        resultsHeaderElem.textContent = allResults;
+
+        // const resultsDataElem = document.createElement('p');
+        // resultsHeaderElem.appendChild(resultsDataElem);
+        // resultsDataElem.textContent = allResults;
+
     }
 }
