@@ -1,98 +1,72 @@
 'use strict';
 
-const sectionElem = document.getElementById('resultsContainer');
-const button = document.getElementById('showResults');
+//////////////////////
+// globals
+//////////////////////
 
-const staticProducts = [];
-let adjustProducts = [];
-let firstProductImg = null;
-let rightProductImg = null;
-let centerProductImg = null;
+const productNames = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'water-can', 'wine-glass'];
+const leftImg = document.getElementById('img1');
+const centerImg = document.getElementById('img2');
+const rightImg = document.getElementById('img3');
+const showResultsButton = document.getElementById('showResults');
+const viewResults = document.getElementById('resultsContainer');
 let countClick = 0;
 const maxClick = 25;
-const leftImg = document.querySelector('section img:first-child');
-const centerImg = document.querySelector('section img:nth-child(2)');
-const rightImg = document.querySelector('section img:nth-child(3)');
-const viewResults = document.querySelector('button');
+let leftProduct = null;
+let centerProduct = null;
+let rightProduct = null;
+
+//////////////////////
+// Functions
+//////////////////////
 
 function Product(name, src) {
     this.name = name;
     this.src = src;
+    this.votes = 0;
     this.views = 0;
-    this.clicks = 0;
 }
 
-let bag = new Product('Bag', './images/bag.jpg');
-let banana = new Product('Banana', './images/banana.jpg');
-let bathroom = new Product('Bathroom', './images/bathroom.jpg');
-let boots = new Product('Boots', './images/boots.jpg');
-let breakfast = new Product('Breakfast', './images/breakfast.jpg');
-let bubblegum = new Product('Bubblegum', './images/bubblegum.jpg');
-let chair = new Product('Chair', './images/chair.jpg');
-let cthulhu = new Product('Cthulhu', './images/cthulhu.jpg');
-let dogDuck = new Product('Dog-Duck', './images/dog-duck.jpg');
-let dragon = new Product('Dragon', './images/dragon.jpg');
-let pen = new Product('Pen', './images/pen.jpg');
-let petSweep = new Product('Pet-Sweep', './images/pet-sweep.jpg');
-let scissor = new Product('Scissor', './images/scissors.jpg');
-let shark = new Product('Shark', './images/shark.jpg');
-let sweep = new Product('Sweep', './images/sweep.png');
-let tauntaun = new Product('Tauntaun', './images/tauntaun.jpg');
-let unicorn = new Product('Unicorn', './images/unicorn.jpg');
-let waterCan = new Product('Water-Can', './images/water-can.jpg');
-let wineGlass = new Product('Wine-Glass', './images/wine-glass.jpg');
+Product.listAllProducts = [];
+Product.adjustedProducts = [];
 
-
-staticProducts.push(bag);
-staticProducts.push(banana);
-staticProducts.push(bathroom);
-staticProducts.push(boots);
-staticProducts.push(breakfast);
-staticProducts.push(bubblegum);
-staticProducts.push(chair);
-staticProducts.push(cthulhu);
-staticProducts.push(dogDuck);
-staticProducts.push(pen);
-staticProducts.push(petSweep);
-staticProducts.push(scissor);
-staticProducts.push(shark);
-staticProducts.push(sweep);
-staticProducts.push(tauntaun);
-staticProducts.push(waterCan);
-staticProducts.push(wineGlass);
+//init is a common to intialize a function
+function initProductions() {
+    //for(let item of(in) array) {}
+    for(let productName of productNames) {
+        const productInstance = new Product(productName, `images/${productName}.jpg`);
+        Product.listAllProducts.push(productInstance);
+    }
+}
 
 function renderProducts() {
-    if(countClick == maxClick) {
-        button.removeAttribute('hidden');
-        viewResults.addEventListener('click', handleViewResultsClick);
-
-        // disable the L, C & R images
-        leftImg.removeEventListener('click', handleLeftClick);
-        centerImg.removeEventListener('click', handleCenterClick);
-        rightImg.removeEventListener('click', handleRightClick);
+    if(countClick === maxClick) {
+        endClicking();
+        return;
     }
 
-    if(adjustProducts.length <= 2) {
-        adjustProducts = staticProducts.slice();
-        shuffleArray(adjustProducts);
+    if(Product.adjustedProducts.length < 3) {
+        Product.adjustedProducts = Product.listAllProducts.slice();
+        shuffleArray(Product.adjustedProducts);
     }
 
-    firstProductImg = adjustProducts.pop();
-    leftImg.setAttribute('src', firstProductImg.src);
+    leftProduct = Product.adjustedProducts.pop();
+    centerProduct = Product.adjustedProducts.pop();
+    rightProduct = Product.adjustedProducts.pop();
 
-    centerProductImg = adjustProducts.pop();
-    centerImg.setAttribute('src', centerProductImg.src);
+    leftProduct.views += 1;
+    centerProduct.views += 1;
+    rightProduct.views += 1;
 
-    rightProductImg = adjustProducts.pop();
-    rightImg.setAttribute('src', rightProductImg.src);
+    leftImg.setAttribute('src', leftProduct.src);
+    centerImg.setAttribute('src', centerProduct.src);
+    rightImg.setAttribute('src', rightProduct.src);
 
-    firstProductImg.views += 1;
-    centerProductImg.view += 1;
-    rightProductImg.view += 1;
+
+    countClick += 1;
 }
 
-
-// Function for shuffling the arrary:
+// Fisher Yates via chat GPT
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -101,49 +75,122 @@ function shuffleArray(array) {
     }
 }
 
-function handleLeftClick(event) {
-    firstProductImg.clicks +=1;
-    countClick += 1;
+function initEventListener() {
+    leftImg.addEventListener('click', handleLeftProductClick);
+    centerImg.addEventListener('click', handleCenterProductClick);
+    rightImg.addEventListener('click', handleRightProductClick);
+}
+
+function handleLeftProductClick() {
+    //
+    leftProduct.votes += 1;
     renderProducts();
 }
 
-function handleCenterClick(event) {
-    centerProductImg.click += 1;
-    countClick += 1;
+function handleCenterProductClick() {
+    //
+    centerProduct.votes += 1;
     renderProducts();
 }
 
-function handleRightClick(event) {
-    rightProductImg.click += 1;
-    countClick += 1;
+function handleRightProductClick() {
+    //
+    rightProduct.votes += 1;
     renderProducts();
 }
 
-function handleViewResultsClick() {
+function endClicking() {
+    leftImg.removeEventListener('click', handleLeftProductClick);
+    centerImg.removeEventListener('click', handleCenterProductClick);
+    rightImg.removeEventListener('click', handleRightProductClick);
+
+    // show button that is hidden
+    showResultsButton.hidden = false;
+    showResultsButton.addEventListener('click', handleShowResults);
+}
+
+function handleShowResults() {
     renderResults();
-  }
-
-leftImg.addEventListener('click', handleLeftClick);
-centerImg.addEventListener('click', handleCenterClick);
-rightImg.addEventListener('click', handleRightClick);
-
-renderProducts();
-
-// function for rendering results
+}
 
 function renderResults() {
-    for(let i=0; i<staticProducts.length; i++) {
-        const currentProduct = staticProducts[i];
-        const allResults = `${currentProduct.name} had ${currentProduct.views} views and was clicked ${currentProduct.clicks} times.`;
-        console.log(allResults);
+    const ul = document.createElement('ul');
+    viewResults.appendChild(ul);
 
-        const resultsHeaderElem = document.createElement('h2');
-        sectionElem.appendChild(resultsHeaderElem);
-        resultsHeaderElem.textContent = allResults;
-
-        // const resultsDataElem = document.createElement('p');
-        // resultsHeaderElem.appendChild(resultsDataElem);
-        // resultsDataElem.textContent = allResults;
-
+    for(let productInstance of Product.listAllProducts) {
+        const result = `This product ${productInstance.name} had ${productInstance.votes} votes, and was seen ${productInstance.views} times.`;
+        const li = document.createElement('li');
+        ul.appendChild(li);
+        li.textContent = result;
     }
+
+    addChart();
+
 }
+
+function addChart() {
+    let productNames = [];
+    let productClicks = [];
+    let productViews = [];
+    
+    for(let i=0; i<Product.listAllProducts.length; i++) {
+        productNames.push(Product.listAllProducts[i].name);
+        productClicks.push(Product.listAllProducts[i].votes);
+        productViews.push(Product.listAllProducts[i].views);
+    }
+
+
+
+  /* refer to Chart.js > Chart Types > Bar Chart:
+  https://www.chartjs.org/docs/latest/charts/bar.html
+  and refer to Chart.js > Getting Started > Getting Started:
+  https://www.chartjs.org/docs/latest/getting-started/ */
+  const data = {
+    labels: productNames,
+    datasets: [{
+      label: 'Clicks',
+      data: productClicks,
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)'
+      ],
+      borderColor: [
+        'rgb(255, 99, 132)'
+      ],
+      borderWidth: 1
+    },
+    {
+      label: 'Views',
+      data: productViews,
+      backgroundColor: [
+        'rgba(255, 159, 64, 0.2)'
+      ],
+      borderColor: [
+        'rgb(255, 159, 64)'
+      ],
+      borderWidth: 1
+    }]
+  };
+
+  const config = {
+    type: 'bar',
+    data: data,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    },
+  };
+  let canvasChart = document.getElementById('myChart');
+  const myChart = new Chart(canvasChart, config);
+}
+
+// Start App
+initProductions();
+initEventListener();
+renderProducts();
+
+
+
+
